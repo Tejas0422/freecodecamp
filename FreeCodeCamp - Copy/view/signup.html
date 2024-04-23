@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/view/stylesignup.css">
+<title>Signup</title>
+</head>
+<body>
+  <h1>Signup</h1>
+  <form onsubmit="handleSignup(event)">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name" required><br><br>
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+    <label for="confirm_password">Confirm Password:</label><br>
+    <input type="password" id="confirm_password" name="confirm_password" required><br><br>
+    <input type="submit" value="Sign Up">
+  </form>
+
+  <script>
+    function handleSignup(event) {
+      event.preventDefault();
+      
+      // Get form values
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm_password').value;
+      console.log(JSON.stringify({ name, email, password }));
+      // Perform validation
+      if (password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
+
+      // Send the signup data to the server (e.g., using fetch or XMLHttpRequest)
+      fetch('http://localhost:3001/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, email, password })
+      
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        alert('Signup successful');
+        // Optionally redirect to another page
+        window.location.href = '/view/index.html';
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Signup failed');
+      });
+    }
+  </script>
+</body>
+</html>
+

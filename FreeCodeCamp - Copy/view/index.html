@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreeCodeCamp</title>
+<link rel="stylesheet" href="/view/styleindex.css">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+</head>
+<body>
+    <script>
+        window.onload = function() {
+            // Close the dropdown menu if the user clicks outside of it
+            window.onclick = function(event) {
+                if (!event.target.matches('.dropbtn')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-content");
+                    for (var i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.style.display === 'block') {
+                            openDropdown.style.display = 'none';
+                        }
+                    }
+                }
+            }
+        
+            const signinBtn = document.getElementById('signin-btn');
+            const loginBox = document.getElementById('login-box');
+            const closeBtn = document.getElementById('close-btn');
+        
+            if (signinBtn && loginBox && closeBtn) {
+                signinBtn.addEventListener('click', () => {
+                    loginBox.style.display = 'block';
+                });
+        
+                closeBtn.addEventListener('click', () => {
+                    loginBox.style.display = 'none';
+                });
+            }
+        }
+    </script>
+        
+
+<header>
+  <nav class="navbar"> 
+      <div class="search-bar">
+        <input type="text" placeholder="Search 8000+ Tutorials">
+      </div>
+      <div class="logo">
+        <a>FreeCodeCamp</a>
+        <a>(<img src="/images/icon.png" width="30px" height="0px">)</a>
+      </div>
+      
+      <div class="nav-links">
+        <ul>
+          <li class="dropdown">
+            <button href="#" class="dropbtn">Menu</button>
+            <div class="dropdown-content">
+              <a href="#">Home</a>
+              <a href="#">Courses</a>
+              <a href="#">Newsteller</a>
+              <a href="#">Join us</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <button class="sign-in" id="signin-btn">SignIn</button>
+        <div id="login-box" class="login-box">
+            <span class="close-btn" id="close-btn">&times;</span>
+            <h2>Login</h2>
+          
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Signin">
+                </div>
+            </form>
+            <br>
+            <hr>
+            <br>
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            <p>Don't have an account <a href= "signup.html" style="background-color: rgba(236, 217, 9, 0.982);">Signup</a></p>
+        </div>
+      </div>    
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div><h1>Learn to code - for free.</h1></div>
+    <div><h3>Build projects.</h3></div>
+    <div><h3>Earn certifications.</h3></div>
+    <div>
+        <h3>Since 2014, more than 40,000 freeCodeCamp.org graduates have gotten</h3>
+        <div class="logo2">
+            <div class="box"><img src="/images/apple.png" alt=""></div>
+            <div class="box"><img src="/images/Google.png" alt=""></div>
+            <div class="box"><img src="/images/microsoft.png" alt=""></div>
+            <div class="box"><img src="/images/Spotify.png" alt=""></div>
+            <div class="box"><img src="/images/amazon.png" alt=""></div>
+        </div>
+    </div>
+  </div>
+  <div><a href="#" class="btn">Get Started (it's free)</a></div>
+</section>
+
+<footer>
+  <div class="container">
+    <p style="color: white; display: block; margin: 0 auto;">&copy; 2024 FreeCodeCamp. All Rights Reserved.</p>
+  </div>
+</footer>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script>
+ function handleLogin(event)
+{   event.preventDefault();
+    console.log("inside function");
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    fetch('http://localhost:3001/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Handle successful login (e.g., redirect to another page)
+      localStorage.setItem('token', data.token);
+      window.location.href = '/view/dashboard.html';
+    })
+    .catch(error => {
+      // Handle login failure
+      console.error('Login failed', error);
+      alert('Login failed');
+    });
+}
+function initGoogleSignIn() {
+    gapi.load('auth2', function() {
+        auth2 = gapi.auth2.init({
+            client_id: '404116272379-spio5h0j1ch1oe5dd215r85odov26740.apps.googleusercontent.com'
+        });
+    });
+}
+function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log('Name: ' + profile.getName());
+  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
+const signinBtn = document.getElementById('signin-btn');
+    const loginBox = document.getElementById('login-box');
+    const closeBtn = document.getElementById('close-btn');
+
+    if (signinBtn && loginBox && closeBtn) {
+        signinBtn.addEventListener('click', () => {
+            loginBox.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            loginBox.style.display = 'none';
+        });
+    }
+
+    initGoogleSignIn(); // Initialize Google Sign-In
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/view/styleindex.css">
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+        }
+        .nav-links {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        
+    </style>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+
+        function init() {
+            gapi.load('auth2', function() {
+            gapi.auth2.init({
+            client_id: '404116272379-spio5h0j1ch1oe5dd215r85odov26740.apps.googleusercontent.com'
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            tokenCheck();
+        });
+
+        function tokenCheck() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "/view/index.html";
+                return
+            }
+        }
+
+        function signOut() {
+            console.log("inside signOut");
+            //var auth2 = gapi.auth2.getAuthInstance();
+            //console.log("auth2", auth2);
+            //auth2.signOut().then(function () {
+                //console.log('User signed out.');
+           // });
+           localStorage.clear();
+           location.href = "/view/index.html";
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <nav class="navbar"> 
+            <div class="search-bar">
+              <input type="text" placeholder="Search 8000+ Tutorials">
+            </div>
+            <div class="logo">
+              <a>FreeCodeCamp</a>
+              <a>(<img src="/images/icon.png" width="30px" height="0px">)</a>
+            </div>
+            
+            <div class="nav-links">
+            <div>
+              <ul>
+                <li class="dropdown">
+                  <button href="#" class="dropbtn">Menu</button>
+                  <div class="dropdown-content">
+                    <a href="#">Home</a>
+                    <a href="#">Courses</a>
+                    <a href="#">Newsteller</a>
+                    <a href="#">Join us</a>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div>
+                <button class="sign-in" id="signin-btn" onclick="signOut();">Sign out</button>
+            </div>
+        </div>
+        </nav>
+    </header>
+    <div class="hero">
+        <h2 style="color: #333;" >Welcome to freeCodeCamp.org</h2>
+       <h3 style="color: #333;" id="content"></h3>
+    </div>   
+    <footer>
+        <div class="container">
+          <p style="color: white; display: block; margin: 0 auto;">&copy; 2024 FreeCodeCamp. All Rights Reserved.</p>
+        </div>
+      </footer>
+      <script>
+         if(localStorage.getItem('token')){
+                fetch('http://localhost:3001/dashboard', {
+                method: 'GET',
+                headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+      return response.json();
+    })
+    .then(data => {
+    // Handle successful login
+    localStorage.setItem('userInfo', JSON.stringify(data.message));
+    const displayName = document.getElementById('content');
+    console.log(displayName);
+    displayName.innerHTML = `Welcome, ${data.message.name}!`;
+    })
+    .catch(error => {
+      // Handle login failure
+      console.error('Something went wrong', error);
+    });
+            }
+      </script>
+</body>
+</html>
